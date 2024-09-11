@@ -268,25 +268,8 @@ max.h2o.alb.con.perwell.formatted <- sprintf("%#.2f", max.h2o.alb.con.perwell)
 max.h2o.alb.con.perwell.status <- c("\\textcolor{red}{WARNING}","\\textcolor{darkgreen}{PASS}")[(max.h2o.alb.con.perwell <= 0.1) + 1]
 
 
-final.qc.call <- c("\\textbf{\\textcolor{red}{WARNING}}","\\textbf{\\textcolor{darkgreen}{PASS}}")[(min.events.per.well.status == "\\textcolor{darkgreen}{PASS}" && min.fu.alb.conc.perwell.status != "\\textcolor{red}{POOR}" && min.dx.marker.con.perwell.status == "\\textcolor{darkgreen}{PASS}" && max.h2o.marker.con.perwell.status == "\\textcolor{darkgreen}{PASS}" && min.mnc.alb.con.perwell.status == "\\textcolor{darkgreen}{PASS}" && max.h2o.alb.con.perwell.status == "\\textcolor{darkgreen}{PASS}") + 1]
+final.qc.call <- c("\\textbf{\\textcolor{red}{WARNING}}","\\textbf{\\textcolor{darkgreen}{PASS}}")[(min.events.per.well.status == "\\textcolor{darkgreen}{PASS}" && min.dx.marker.con.perwell.status == "\\textcolor{darkgreen}{PASS}" && max.h2o.marker.con.perwell.status == "\\textcolor{darkgreen}{PASS}" && min.mnc.alb.con.perwell.status == "\\textcolor{darkgreen}{PASS}" && max.h2o.alb.con.perwell.status == "\\textcolor{darkgreen}{PASS}") + 1]
 
-
-
-QC.values <- c(min.events.per.well, 
-						min.fu.alb.conc.perwell.formatted,
-						"",
-						min.dx.marker.con.perwell.formatted, max.h2o.marker.con.perwell.formatted,
-						"",
-						min.mnc.alb.con.perwell.formatted,max.h2o.alb.con.perwell.formatted,
-						""
-						)
-QC.status <- c(min.events.per.well.status, 
-						min.fu.alb.conc.perwell.status,
-						"",
-						min.dx.marker.con.perwell.status, max.h2o.marker.con.perwell.status,
-						"",
-						min.mnc.alb.con.perwell.status,max.h2o.alb.con.perwell.status,
-						final.qc.call)
 
 
 
@@ -305,12 +288,8 @@ QC.status <- c(min.events.per.well.status,
 &  `r format(min.events.per.well, scientific = FALSE)`  
 &  `r min.events.per.well.status` \\
 
-2. Minimum FU [1000ng] ALB Conc. 
-&  >10000 copies/uL (GOOD) \newline 2000-10000 copies/uL (ACCEPTABLE) \newline <2000 copies/uL (POOR)       
-& `r value1`  \leavevmode\newline `r value2`  \leavevmode\newline `r value3` 
-& `r status1` \leavevmode\newline `r status2` \leavevmode\newline `r status3`   \\
 
-3. Assay Controls for Marker Assay 
+2. Assay Controls for Marker Assay 
 \newline \hspace*{0.3cm}- Positive (Dx [10ng]) Marker Conc. 
 \newline \hspace*{0.3cm}- NTC (H2O) Marker Conc. 
 & \leavevmode\newline $\ge$10 copies/uL \newline $\le$0.1 copies/uL 
@@ -319,7 +298,7 @@ QC.status <- c(min.events.per.well.status,
 & \leavevmode\newline `r min.dx.marker.con.perwell.status`    
              \newline `r max.h2o.marker.con.perwell.status` \\
 
-4. Assay Controls for Albumin Assay 
+3. Assay Controls for Albumin Assay 
 \newline \hspace*{0.3cm}- Positive (MNC [5ng]) ALB Conc. 
 \newline \hspace*{0.3cm}- NTC (H2O) ALB Conc.
 & \leavevmode\newline $\ge$50 copies/uL \newline $\le$0.1 copies/uL 
@@ -328,7 +307,7 @@ QC.status <- c(min.events.per.well.status,
 & \leavevmode\newline `r min.mnc.alb.con.perwell.status`    
              \newline `r max.h2o.alb.con.perwell.status` \\
 
-5. LPC concentration (copies/uL) & & `r sprintf("%#.2f", qc.concentration)` & \\
+4. LPC concentration (copies/uL) & & `r sprintf("%#.2f", qc.concentration)` & \\
 
 \hline
 
@@ -457,88 +436,11 @@ if (params$runType == "absolute") {
 		                              "Absolute NTV", 
 			                          
 		                              "MNC Baseline", 
-		                              "Total Cell Numbers", 
+		                              "Total Assessable GE Number", 
 		                              "Call")
 
 
-} else {
-
-		# relatiive mrd
-		relative.mrd <- absolute.mrd/dx.baseline
-
-		# mrd thresholds
-		mrd.ptv <- (ptv/fu.cell.concentration)/dx.baseline
-		mrd.ntv <- (ntv/fu.cell.concentration)/dx.baseline
-
-		dx.baseline.formatted <- sprintf("%.0f%%", dx.baseline * 100) 
-		relative.mrd.formatted <- formatC(relative.mrd, format = "E", digits = 2)
-
-		mrd.ntv.formatted <- formatC(mrd.ntv, format = "E", digits = 2)
-		mrd.ptv.formatted <- formatC(mrd.ptv, format = "E", digits = 2)
-
-
-		#
-		
-		if (relative.mrd >= mrd.ptv) {
-			mrd.call <- "POS"
-		} else if (relative.mrd < mrd.ntv) {
-			mrd.call <- "NEG"
-		} else {
-			mrd.call <- "PNQ"
-		}
-
-
-
-		mrd.output.values <- c(fu.marker.formatted, 
-					   fu.alb.concentration.formatted, 
-					   absolute.mrd.formatted,  
-
-					   absolute.ptv.formatted, 
-					   absolute.ntv.formatted, 
-
-					   "", 
-			           
-					   dx.baseline.formatted, 
-					   background.level.formatted, 
-
-					   total.cell.no, 
-
-					   "", 
-
-					   relative.mrd.formatted, 
-					    
-
-					   mrd.ptv.formatted, 
-					   mrd.ntv.formatted, 
-					   
-					   mrd.call)
-
-		names(mrd.output.values) <- c("FU Marker (copies/uL)", 
-		                              "FU ALB (copies/uL)", 
-		                              "Absolute MRD", 
-
-		                              "Absolute PTV", 
-		                              "Absolute NTV", 
-
-		                              "", 
-			                         
-		                              "Dx Baseline", 
-		                              "MNC Baseline", 
-
-		                              "Total Assessable Cell Numbers", 
-
-		                              "", 
-
-		                              "MRD", 
-		                              
-
-		                              "PTV", 
-		                              "NTV", 
-		                             
-		                              "Call")
-	
-
-}
+} 
 
 
 
