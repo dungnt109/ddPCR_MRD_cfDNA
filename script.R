@@ -105,10 +105,6 @@ sample_sheet_file <- file.choose(new = FALSE)
 
 folder <- dirname(sample_sheet_file)
 
-cat("Do you want to perform absolute or relative MRD?\n1. Absolute\n2. Relative\n")
-
-answer <- readLines("stdin",n=1)
-
 runType <- "absolute"
 
 cat("\nVerified by?\n1. Prof Allen Yeoh\n2. Dr Lu Yi\n3. Blank\n")
