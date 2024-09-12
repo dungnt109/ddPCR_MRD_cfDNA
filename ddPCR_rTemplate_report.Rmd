@@ -407,9 +407,9 @@ background.level.formatted <- formatC(background.level, format = "E", digits = 2
 if (params$runType == "absolute") {
 
 
-		
-		
-		if (absolute.mrd >= absolute.ptv) {
+                if (absolute.mrd == 0){  		
+		        mrd.call <- "NEG" 
+		} else if (absolute.mrd >= absolute.ptv) {
 			mrd.call <- "POS"
 		} else if (absolute.mrd < absolute.ntv) {
 			mrd.call <- "NEG"
